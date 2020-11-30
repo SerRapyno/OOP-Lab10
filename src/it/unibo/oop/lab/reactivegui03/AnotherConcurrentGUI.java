@@ -1,4 +1,4 @@
-package it.unibo.oop.lab.reactivegui02;
+package it.unibo.oop.lab.reactivegui03;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -10,12 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-
-
-
-
-public final class ConcurrentGUI2 extends JFrame {
-
+public class AnotherConcurrentGUI extends JFrame {
     private static final long serialVersionUID = 1L;
     private static final double WIDTH_PERC = 0.2;
     private static final double HEIGHT_PERC = 0.1;
@@ -24,7 +19,7 @@ public final class ConcurrentGUI2 extends JFrame {
     private final JButton up = new JButton("up");
     private final JButton down = new JButton("down");
 
-    public ConcurrentGUI2() {
+    public AnotherConcurrentGUI () {
         super();
         final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         this.setSize((int) (screenSize.getWidth() * WIDTH_PERC), (int) (screenSize.getHeight() * HEIGHT_PERC));
@@ -39,6 +34,7 @@ public final class ConcurrentGUI2 extends JFrame {
 
         final Agent agent = new Agent();
         new Thread(agent).start();
+
 
         stop.addActionListener(t -> {
             agent.stopCounting();
@@ -55,14 +51,20 @@ public final class ConcurrentGUI2 extends JFrame {
         private volatile boolean stop;
         private volatile int counter;
         private volatile int increase = 1;
+        private volatile int counter2;
 
         @Override
         public void run() {
             while (!this.stop) {
                 try {
-                    SwingUtilities.invokeAndWait(() -> ConcurrentGUI2.this.display.setText(Integer.toString(Agent.this.counter)));
+                    if (counter2 == 10) {
+                        
+                    }
+                    
+                    SwingUtilities.invokeAndWait(() -> AnotherConcurrentGUI.this.display.setText(Integer.toString(Agent.this.counter)));
                     this.counter += increase;
                     Thread.sleep(100);
+                    counter2++;
                 } catch (InvocationTargetException | InterruptedException ex) {
                     ex.printStackTrace();
                 }
@@ -79,3 +81,4 @@ public final class ConcurrentGUI2 extends JFrame {
 
     }
 }
+
