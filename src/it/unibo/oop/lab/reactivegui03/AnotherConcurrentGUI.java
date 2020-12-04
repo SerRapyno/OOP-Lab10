@@ -19,7 +19,7 @@ public class AnotherConcurrentGUI extends JFrame {
     private final JButton up = new JButton("up");
     private final JButton down = new JButton("down");
 
-    public AnotherConcurrentGUI () {
+    public AnotherConcurrentGUI() {
         super();
         final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         this.setSize((int) (screenSize.getWidth() * WIDTH_PERC), (int) (screenSize.getHeight() * HEIGHT_PERC));
@@ -34,8 +34,6 @@ public class AnotherConcurrentGUI extends JFrame {
 
         final Agent agent = new Agent();
         new Thread(agent).start();
-
-
         stop.addActionListener(t -> {
             agent.stopCounting();
             up.setEnabled(false);
@@ -51,20 +49,21 @@ public class AnotherConcurrentGUI extends JFrame {
         private volatile boolean stop;
         private volatile int counter;
         private volatile int increase = 1;
-        private volatile int counter2;
+
 
         @Override
         public void run() {
             while (!this.stop) {
                 try {
-                    if (counter2 == 10) {
-                        
-                    }
-                    
-                    SwingUtilities.invokeAndWait(() -> AnotherConcurrentGUI.this.display.setText(Integer.toString(Agent.this.counter)));
                     this.counter += increase;
+                    SwingUtilities.invokeAndWait(() -> AnotherConcurrentGUI.this.display.setText(Integer.toString(Agent.this.counter)));
                     Thread.sleep(100);
-                    counter2++;
+                    if (this.counter == 100) {
+                        this.stopCounting();
+                        up.setEnabled(false);
+                        down.setEnabled(false);
+                        AnotherConcurrentGUI.this.stop.setEnabled(false);
+                    }
                 } catch (InvocationTargetException | InterruptedException ex) {
                     ex.printStackTrace();
                 }
